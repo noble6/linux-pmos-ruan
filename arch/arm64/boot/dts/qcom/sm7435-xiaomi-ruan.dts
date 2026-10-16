@@ -1,0 +1,49 @@
+// SPDX-License-Identifier: BSD-3-Clause
+/*
+ * Xiaomi Redmi Pad Pro 5G / POCO Pad 5G (ruan)
+ */
+
+/dts-v1/;
+
+#include "sm7435.dtsi"
+
+/ {
+	model = "Xiaomi Redmi Pad Pro 5G";
+	compatible = "xiaomi,ruan", "qcom,sm7435";
+	chassis-type = "tablet";
+
+	/* Parrot and ParrotP, so the bootloader picks this dtb on both. */
+	qcom,msm-id = <0x219 0x10000>, <0x265 0x10000>, <0x277 0x10000>,
+		      <0x247 0x10000>, <0x27e 0x10000>;
+	qcom,board-id = <0 0>;
+
+	chosen {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		stdout-path = "framebuffer0";
+
+		/* The bootloader's splash, left scanning out by the video mode panel. */
+		framebuffer0: framebuffer@b8000000 {
+			compatible = "simple-framebuffer";
+			reg = <0x0 0xb8000000 0x0 0x2b00000>;
+			width = <1600>;
+			height = <2560>;
+			stride = <(1600 * 4)>;
+			format = "a8r8g8b8";
+		};
+	};
+
+	/*
+	 * The bootloader applies ruan's overlay from the stock dtbo partition
+	 * on top of this dtb, resolving its 101 downstream labels through
+	 * __symbols__; mkimg points all of them here so it applies and
+	 * nothing it adds is probed.
+	 */
+	dtbo_sink: dtbo-sink {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		status = "disabled";
+	};
+};
